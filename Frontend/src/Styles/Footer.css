@@ -1,0 +1,94 @@
+.footer-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:400px;
+    /* background-color: rgb(194, 177, 177); */
+    background-color: rgb(224,224,224);
+    margin-top:389px;
+}
+
+.footer-contact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    width:50%;
+}
+
+.phone{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: -67px;
+
+    
+}
+
+.phoneTo {
+    font-size: 21px;
+    padding-left: 22px;
+    position: relative;
+    left: -5px;
+}
+
+
+
+.about-email {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.mailTo {
+    font-size: 21px;
+    padding-left: 22px;
+}
+
+.mailTo a {
+    text-decoration: none;
+    color:black;
+}
+
+.mailTo a:hover {
+    text-decoration: underline;
+    color:blue;
+}
+
+.footer-about {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+
+}
+
+.footer-about-desc {
+    position: relative;
+    top: -41px;
+}
+
+.footer-about-head {
+    font-size:30px;
+
+}
+
+.footer-about-contribute {
+    position: relative;
+    top: 63px;
+}
+
+.footer-about-contribute a {
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+
+}
+
+.footer-about-contribute a:hover {
+    text-decoration: underline;
+    color:blue;
+}

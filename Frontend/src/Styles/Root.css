@@ -1,0 +1,28 @@
+
+
+* {
+    
+    font-family: 'Baloo Bhai';
+    padding: 0px;
+    margin: 0px;
+    scroll-behavior: smooth;
+
+    
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #b8aaaab6;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(53, 135, 243) ;
+  }
+  
+

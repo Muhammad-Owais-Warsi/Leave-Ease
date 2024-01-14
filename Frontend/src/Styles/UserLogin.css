@@ -1,0 +1,100 @@
+/* UserLogin.css */
+
+.container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 30px;
+    position: relative;
+    left: -57px;
+}
+
+.login-head {
+    font-size: 50px;
+}
+
+input {
+    font-size: 20px;
+    margin: 10px;
+    outline: none; /* Remove default outline */
+    border: 2px solid #ccc; /* Add a default border color */
+    transition: border-color 0.3s ease;
+    height: 54px;
+    width: 178%;
+}
+
+/* Style the outline when the input is focused */
+input:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px 2px #3498db; /* Blue line for the focused outline */
+}
+
+.back{
+    position: relative;
+    top: -307px;
+    left: -482px;
+    text-decoration: none;
+    color: black;
+}
+
+a.back:hover {
+    text-decoration: underline;
+    color:blue;
+}
+
+.email {
+    display: flex;
+    justify-content: center;
+    align-items: self-start;
+    flex-direction: column;
+    margin: 30px;
+    position: relative;
+    left: -99px;
+}
+
+.email-head {
+    margin-left: 11px;
+}
+
+.registerNo {
+    display: flex;
+    justify-content: center;
+    align-items: self-start;
+    flex-direction: column;
+    position: relative;
+    left: -99px;
+}
+
+.registerNo-head {
+    margin-left: 11px;
+}
+
+button {
+    font-size: 20px;
+    color: #000;
+    background: linear-gradient(90deg, #fff 50%, rgb(53, 135, 243) 50%);
+    background-size: 200% 100%;
+    transition: background-position 0.3s ease, color 0.3s ease;
+    border: 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 85px;
+    padding: 5px;
+    width: 50%;
+}
+
+button:hover {
+    background-position: -100% 0;
+    color: #fff;
+}

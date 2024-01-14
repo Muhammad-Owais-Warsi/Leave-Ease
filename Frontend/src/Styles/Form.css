@@ -1,0 +1,85 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.form {
+    width: 170%;
+    margin-bottom: 10px; /* Optional: Add some spacing between inputs */
+}
+
+.form-head {
+    position: relative;
+    top:32px;
+}
+
+.form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    left:-115px;
+    top:61px;
+}
+
+.fh {
+    position: relative;
+    left:11px;
+}
+
+.form-head {
+    font-size:40px;
+}
+
+span {
+    color:red;
+}
+
+.submit-btn button {
+    font-size: 25px;
+    color: #000;
+    background: linear-gradient(90deg, #fff 50%, rgb(53, 135, 243) 50%);
+    background-size: 200% 100%;
+    transition: background-position 0.3s ease, color 0.3s ease;
+    border: 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 85px;
+    padding: 5px;
+    width: 150%;
+}
+
+.submit-btn button:hover {
+    background-position: -100% 0;
+    color: #fff;
+}
+
+.date-container {
+    display: flex;
+    justify-content: center ;
+    align-items: center;
+
+}
+
+.contact-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-btn {
+    position: relative;
+    left: 79px;
+    top: -36px;
+    width: 24%;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

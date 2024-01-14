@@ -1,0 +1,14 @@
+
+
+
+
+.cursor-style {
+    background-color: rgba(0, 255, 255, 0.7);
+    height: 2rem;
+    width: 2rem;
+    border-radius: 100%;
+    transform-origin: 100% 100%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    pointer-events: none;
+}

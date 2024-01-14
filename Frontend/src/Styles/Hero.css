@@ -1,0 +1,75 @@
+/* Hero.css */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    top: 70px;
+}
+
+.hero-btn button {
+    font-size: 30px;
+    color: #000;
+    background: linear-gradient(90deg, #fff 50%, rgb(53, 135, 243) 50%);
+    background-size: 200% 100%;
+    transition: background-position 0.3s ease, color 0.3s ease;
+    border: 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 85px;
+    padding: 5px;
+    width: 131%;
+}
+
+.hero-btn button:hover {
+    background-position: -100% 0;
+    color: #fff;
+}
+
+.hero-text {
+    font-size: 75px;
+    margin-top: 20px;
+    position: relative;
+    top: -34px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.hero-text::before {
+    content: "Your Path to Seamless Breaks.";
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
+    animation: typing 7s steps(40) infinite, blinkCursor 1s infinite step-end;
+    position: relative;
+    top:170px;
+}
+
+.leave {
+    position: relative;
+    top:-120px;
+    font-size: 100px;
+}
+
+@keyframes typing {
+    from, to {
+        width: 0;
+        color: #53a5f3;
+    }
+    50% {
+        width: 100%;
+        color: rgb(9, 8, 82);
+    }
+}
+
+@keyframes blinkCursor {
+    0%, 100% {
+        border-right: 2px solid transparent;
+    }
+    50% {
+        border-right: 2px solid rgb(53, 135, 243);
+    }
+}

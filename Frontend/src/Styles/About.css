@@ -1,0 +1,67 @@
+
+.about {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+    position: relative;
+    top: 180px;
+}
+
+.about-main {
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    margin-left:70px;
+    margin-top:33px;
+}
+
+.about-head {
+    font-size: 60px;
+}
+
+.about-desc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64%;
+    flex-wrap: wrap;
+    padding: 25px;
+    margin-top: 5px;
+    font-size: 20px;
+    text-align: justify;
+    color:rgb(57, 64, 75);
+}
+
+.about-img img{
+    object-fit: contain;
+    width: 100%;
+}
+
+
+.question-mark {
+    font-size: 60px;
+    position: relative;
+    animation: dropQuestionMark 1s ease, glow 2s ease infinite;
+}
+
+@keyframes dropQuestionMark {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        color: #fff; /* Set the glow color */
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Adjust the size and opacity of the glow */
+    }
+    50% {
+        color: rgb(53, 135, 243); /* Change the color for variety */
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+    }
+}
