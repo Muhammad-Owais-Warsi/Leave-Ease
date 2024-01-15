@@ -4,13 +4,13 @@ import { Link } from "react-router-dom"
 import toast, { Toaster } from 'react-hot-toast';
 import { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 export default function FaLogin() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const navigate = useNavigate();
 
     const Hodsubmit = async () => {
         if (!email || !password) {
@@ -19,7 +19,7 @@ export default function FaLogin() {
             const loadingNotification = toast.loading("Submitting...");
 
             try {
-                await AppForm();
+                const responseData = await AppForm();
 
                 setTimeout(() => {
                     toast.dismiss(loadingNotification);
@@ -32,7 +32,7 @@ export default function FaLogin() {
                 }, 2000)
 
                 setTimeout(() => {
-                    navigate("/");
+                    navigate(`/FaApplication?data=${encodeURIComponent(JSON.stringify(responseData))}`);
                 }, 3000)
             } catch (error) {
                 toast.dismiss(loadingNotification);
@@ -44,12 +44,13 @@ export default function FaLogin() {
 
     const AppForm = async () => {
         try {
-            await axios.post("http://localhost:4000/hod/login", {
+            const responseData = await axios.post("http://localhost:4000/fa/login", {
 
                 email: email,
                 password: password,
 
             });
+            return responseData;
         } catch (error) {
             console.error("Form submission error:", error);
             throw error;
