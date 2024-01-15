@@ -184,7 +184,7 @@ app.post("/form", async (req, res) => {
             service: 'gmail',
             auth: {
                 user: 'warsimuhammadowais@gmail.com',
-                pass: 'lpal kbcd xqcg eoeq'
+                pass:''
             }
         });
 
@@ -285,7 +285,7 @@ app.post("/fa/reject", async (req,res) => {
                 service: 'gmail',
                 auth: {
                     user: 'warsimuhammadowais@gmail.com',
-                    pass: ' '
+                    pass: ''
                 }
             });
     
