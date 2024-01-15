@@ -285,7 +285,7 @@ app.post("/fa/reject", async (req,res) => {
                 service: 'gmail',
                 auth: {
                     user: 'warsimuhammadowais@gmail.com',
-                    pass: ''
+                    pass: ' '
                 }
             });
     
