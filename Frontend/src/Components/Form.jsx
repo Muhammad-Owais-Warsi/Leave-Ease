@@ -49,7 +49,7 @@ export default function Form() {
 
     const AppForm = async () => {
         try {
-            await axios.post("http://localhost:4000/form", {
+            await axios.post("http://localhost:3000/form", {
                 name: name,
                 email: email,
                 register: register,

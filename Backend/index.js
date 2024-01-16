@@ -10,22 +10,8 @@ import nodemailer from "nodemailer";
 
 const primary_mail = process.env.MAIL_USER;
 const primary_mail_pass = process.env.MAIL_PASSWORD;
-const secondary_mail = process.env.DECOY_USER;
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: primary_mail,
-        pass: primary_mail_pass,
-    },
-});
 
-const mailOptions = {
-    from: primary_mail,
-    to: secondary_mail,
-    subject: 'Test Email',
-    text: 'Hello, this is a test email!',
-  };
 
 const port = 3000;
 const app = express();
@@ -153,10 +139,10 @@ const Fa = mongoose.model("Fa", faSchema);
 const Hod = mongoose.model("Hod", hodSchema);
 
 
-// app.get("/user", async (req, res) => {
-//     const users = await User.find({});
-//     res.json(users);
-// });
+app.get("/user", async (req, res) => {
+    const users = await User.find({});
+    res.json(users);
+});
 
 app.post("/user/login", async (req, res) => {
     const { email, register } = req.body;
@@ -198,20 +184,70 @@ app.post("/form", async (req, res) => {
                     form: form,
                 }
             )
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: primary_mail,
+                    pass: primary_mail_pass,
+                },
+            });
+            
+            const mailOptions = {
+                from: primary_mail,
+                to: `${email}`,
+                subject: 'Application Submitted',
+                html: `
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                            }
+            
+                            .container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                padding: 20px;
+                                border: 1px solid #ccc;
+                                border-radius: 5px;
+                            }
+            
+                            h2 {
+                                color: #333;
+                            }
+            
+                            p {
+                                color: #555;
+                            }
+                            a{
+                                color:blue;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h2>Your Application has been Submitted</h2>
+                            <p>Thank you for submitting your application. We will review it and inform you soon.</p>
+                            <a>Leave Ease<a/>
+                        </div>
+                    </body>
+                </html>
+            `
+            };
             transporter.sendMail(mailOptions, (err, info) => {
-                if (err){
+                if (err) {
                     console.log(err);
                 }
-                else{
+                else {
                     console.log('mail sent ' + info);
                 }
             });
             res.status(200).json({ message: FaUser });
         }
     }
-    catch(err){
+    catch (err) {
         console.log(err);
-    }   
+    }
 });
 
 
