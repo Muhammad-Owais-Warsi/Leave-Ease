@@ -136,10 +136,15 @@ const FaApp = () => {
     
         try {
             const newData = await rejectForm(email);
+    
+            // Update the state with the new data
             setForms(newData.data.data);
     
             toast.dismiss(loadingNotification);
             toast.success("Form successfully rejected!", { icon: '✅' });
+    
+            // Navigate to the FaApplication page with the new data
+            navigate(`/FaApplication?data=${encodeURIComponent(JSON.stringify(newData))}`);
         } catch (error) {
             console.error("Error rejecting form:", error);
             toast.dismiss(loadingNotification);
@@ -153,7 +158,7 @@ const FaApp = () => {
             const newData = await axios.post("http://localhost:4000/fa/reject", {
                 email: email
             });
-            setForms(newData.data.data)
+            setForms("");
             return newData;
         }catch(err) {
             console.error("Error:", err);
