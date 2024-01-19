@@ -393,8 +393,8 @@ app.post('/fa/accept', async (req, res) => {
             </head>
             <body>
                 <div class="container">
-                    <h2>Your Application has Rejected</h2>
-                    <p>Due to some reasons your leave application has been rejected.</p>
+                    <h2>Your Application has been Accepted</h2>
+                    <p>Due to some reasons your leave application has been accepted.</p>
                     <a>Leave Ease<a/>
                 </div>
             </body>
@@ -407,10 +407,10 @@ app.post('/fa/accept', async (req, res) => {
           console.log(err);
         }
         else{
-          console.log("notification send " + resul.response);
+          console.log("notification send " + result.response);
         }
       });
-      res.status(200).json(result);
+      res.status(200).json({message: "success! mail sent"});
 
     }
     else{
