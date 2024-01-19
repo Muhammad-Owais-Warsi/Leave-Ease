@@ -254,8 +254,6 @@ app.post("/fa/login", async (req, res) => {
   }
 });
 
-
-
 app.post("/fa/reject", async (req, res) => {
   const { email } = req.body;
 
@@ -327,43 +325,39 @@ app.post("/fa/reject", async (req, res) => {
         }
       });
 
-      res.status(200).json({newData});
-
-    }
-
-    else{
-
-        res.status(404).json({message: 'Error'});
+      res.status(200).json({ newData });
+    } else {
+      res.status(404).json({ message: "Error" });
     }
   }
 });
 
-app.post('/fa/accept', async (req, res) => {
-    const {email} = req.body;
+app.post("/fa/accept", async (req, res) => {
+  const { email } = req.body;
 
-    const FaRetrieveData = await Fa.findOne({email});
-    const HodRetrieveData = await Hod.create({
-        name: FaRetrieveData.name,
-        email: FaRetrieveData.email,
-        register: FaRetrieveData.register,
-        form: FaRetrieveData.form,
+  const FaRetrieveData = await Fa.findOne({ email });
+  const HodRetrieveData = await Hod.create({
+    name: FaRetrieveData.name,
+    email: FaRetrieveData.email,
+    register: FaRetrieveData.register,
+    form: FaRetrieveData.form,
+  });
+  const faDelete = await Fa.deleteOne({ email });
+  const newData = await Fa.find({});
+
+  if ((HodRetrieveData, newData)) {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "bhattacharjeedeboneil@gmail.com",
+        pass: "hpyf xhha klgs djmy",
+      },
     });
-    const faDelete = await Fa.deleteOne({email});
-    const newData = await Fa.find({});
-
-    if (HodRetrieveData, newData){
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'bhattacharjeedeboneil@gmail.com',
-          pass: 'hpyf xhha klgs djmy',
-        }
-      });
-      const mailOptions = {
-        from: 'bhattacharjeedeboneil@gmail.com',
-        to: `${email}`,
-        subject: 'Application Accepted - Notification',
-        html: `
+    const mailOptions = {
+      from: "bhattacharjeedeboneil@gmail.com",
+      to: `${email}`,
+      subject: "Application Accepted - Notification",
+      html: `
         <html>
             <head>
                 <style>
@@ -400,22 +394,115 @@ app.post('/fa/accept', async (req, res) => {
             </body>
         </html>
     `,
+    };
+
+    transporter.sendMail(mailOptions, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("notification send " + result.response);
+      }
+    });
+    res.status(200).json({ message: "success! mail sent" });
+  } else {
+    res.status(404).json({ message: "error detected" });
+  }
+});
+
+app.post("/hod/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(404).json({ message: "error detected" });
+  } else {
+    if (
+      email == "bhattacharjeedeboneil@gmail.com" &&
+      password == "Iamkennys7@"
+    ) {
+      const data = await Hod.find({});
+      if (data) {
+        res.status(200).json({ message: "success", data });
+      } else {
+        res.status(401).json({ message: "error" });
+      }
+    }
+  }
+});
+
+app.post("/hod/reject", async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    res.status(404).json({ message: "error" });
+  } else {
+    const hodDataDelete = await Hod.deleteOne({ email: email });
+    const userDataDelete = await User.deleteOne({ email: email });
+
+    const newData = await Hod.find({});
+
+    if (hodDataDelete && userDataDelete) {
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "bhattacharjeedeboneil@gmail.com",
+          pass: "hpyf xhha klgs djmy",
+        },
+      });
+
+      const mailOptions = {
+        from: "bhattacharjeedeboneil@gmail",
+        to: `${email}`,
+        subject: "Application Rejected",
+        html: `
+                    <html>
+                        <head>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                }
+            
+                                .container {
+                                    max-width: 600px;
+                                    margin: 0 auto;
+                                    padding: 20px;
+                                    border: 1px solid #ccc;
+                                    border-radius: 5px;
+                                }
+            
+                                h2 {
+                                    color: #333;
+                                }
+            
+                                p {
+                                    color: #555;
+                                }
+                                a{
+                                    color:blue;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <h2>Your Application has Rejected</h2>
+                                <p>Due to some reasons your leave application has been rejected.</p>
+                                <a>Leave Ease<a/>
+                            </div>
+                        </body>
+                    </html>
+                `,
       };
 
-      transporter.sendMail(mailOptions, (err, result) => {
+      transporter.sendMail(mailOptions, function(err, result) {
         if (err) {
           console.log(err);
-        }
-        else{
-          console.log("notification send " + result.response);
+        } else {
+          console.log("email sent" + result.response);
         }
       });
-      res.status(200).json({message: "success! mail sent"});
 
+      res.status(200).json({ newData });
+    } else {
+      res.status(401).json({ message: "Invalid" });
     }
-    else{
-      res.status(404).json({message: 'error detected'});
-    }
+  }
 });
 
 app.listen(port, () => {
