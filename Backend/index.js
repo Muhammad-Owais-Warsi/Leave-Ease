@@ -505,6 +505,13 @@ app.post("/hod/reject", async (req, res) => {
   }
 });
 
+app.post("/hod/accept", (req, res) => {
+  const {email} = req.body;
+
+  
+
+});
+
 app.listen(port, () => {
   console.log("working");
 });
