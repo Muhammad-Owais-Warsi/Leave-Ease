@@ -747,9 +747,6 @@ const generateQr = async (qrData, Student, timestamp) => {
 
 
 
-
-
-
 app.post("/hod/approve", async (req, res) => {
 
     const { email } = req.body;

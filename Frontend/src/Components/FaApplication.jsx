@@ -202,7 +202,7 @@ const FaApp = () => {
 
     const rejectForm = async (email) => {
         try {
-            const response = await axios.post("http://localhost:4000/fa/reject", {
+            const response = await axios.post("http://localhost:3000/fa/reject", {
                 email: email
             });
             console.log(response);
@@ -215,7 +215,7 @@ const FaApp = () => {
 
     const approveForm = async (email) => {
         try {
-            const response = await axios.post("http://localhost:4000/fa/approve", {
+            const response = await axios.post("http://localhost:3000/fa/approve", {
                 email: email
             });
             console.log(response);

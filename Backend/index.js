@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import fs from "fs";
 import nodemailer from "nodemailer";
+import QRcode from "qrcode"
 
 const primary_mail = process.env.MAIL_USER;
 const primary_mail_pass = process.env.MAIL_PASSWORD;
@@ -146,6 +147,18 @@ app.get("/", async (req, res) => {
   res.json(users);
 });
 
+app.delete("/del", async (req, res) => {
+  await User.deleteMany({});
+  await Fa.deleteMany({});
+  await Hod.deleteMany({});
+  res.json({ msg: "done" });
+
+})
+
+app.get("/getfa", async (req,res) => {
+  const data = await Fa.find({})
+  res.json({msg:data})
+})
 app.get("/formdata", async (req, res) => {
   const data = await Fa.find({});
   res.json(data);
@@ -181,6 +194,7 @@ app.post("/user/login", async (req, res) => {
       register: register,
     });
   }
+  res.status(200).json({message:"success"})
 });
 
 app.post("/form", async (req, res) => {
@@ -269,8 +283,8 @@ app.post("/fa/login", async (req, res) => {
     res.status(401).json({ message: "Repeated values found." });
   } else {
     if (
-      email === "bhattacharjeedeboneil@gmail.com" &&
-      password === ""
+      email === primary_mail &&
+      password === process.env.MAIL_USER_PASS
     ) {
       const data = await Fa.find({});
       if (data) {
@@ -279,6 +293,7 @@ app.post("/fa/login", async (req, res) => {
         res.status(401).json({ message: "error" });
       }
     }
+    res.status(400).json({message:"error"})
   }
 });
 
@@ -288,6 +303,7 @@ app.post("/fa/reject", async (req, res) => {
   if (!email) {
     res.status(401).json({ message: "error" });
   } else {
+    const user = await Fa.findOne({ email });
     const userDelete = await User.deleteOne({ email });
     const faDelete = await Fa.deleteOne({ email });
 
@@ -297,51 +313,79 @@ app.post("/fa/reject", async (req, res) => {
       var transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "bhattacharjeedeboneil@gmail.com",
-          pass: "hpyf xhha klgs djmy",
+          user: primary_mail,
+          pass: primary_mail_pass,
         },
       });
 
       var mailOptions = {
-        from: "bhattacharjeedeboneil@gmail.com",
+        from: primary_mail,
         to: `${email}`,
         subject: "Application Submitted - Notification",
         html: `
-                    <html>
-                        <head>
-                            <style>
-                                body {
-                                    font-family: Arial, sans-serif;
-                                }
-            
-                                .container {
-                                    max-width: 600px;
-                                    margin: 0 auto;
-                                    padding: 20px;
-                                    border: 1px solid #ccc;
-                                    border-radius: 5px;
-                                }
-            
-                                h2 {
-                                    color: #333;
-                                }
-            
-                                p {
-                                    color: #555;
-                                }
-                                a{
-                                    color:blue;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="container">
-                                <h2>Your Application has Rejected</h2>
-                                <p>Due to some reasons your leave application has been rejected.</p>
-                                <a>Leave Ease<a/>
-                            </div>
-                        </body>
-                    </html>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body {
+                    font-family: 'Arial', sans-serif;
+                    background-color: #f5f5f5;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .container {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    padding: 20px;
+                    background-color: #ffffff;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+        
+                h2 {
+                    color: #333;
+                    margin-bottom: 20px;
+                }
+        
+                p {
+                    color: #555;
+                    line-height: 1.6;
+                }
+        
+                a {
+                    color: #007bff;
+                    text-decoration: none;
+                }
+        
+                a:hover {
+                    text-decoration: underline;
+                }
+        
+                .footer {
+                    margin-top: 20px;
+                    text-align: center;
+                    color: #777;
+                    font-size: 14px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>Your Application has been Rejected</h2>
+                <p>Dear ${user.name},</p>
+                <p>We regret to inform you that your leave application has been rejected due to some reasons, as communicated by the Faculty Advisor.</p>
+                <p>If you have any questions or need further clarification, please feel free to <a href="mailto:support@example.com">contact our support team</a>.</p>
+                <p>Best regards,<br> Team LeaveEase</p>
+            </div>
+            <div class="footer">
+                <p>This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+        </html>
                 `,
       };
 
@@ -363,26 +407,28 @@ app.post("/fa/reject", async (req, res) => {
 app.post("/fa/approve", async (req, res) => {
   const { email } = req.body;
 
-  const FaRetrieveData = await Fa.findOne({ email });
+  const FaRetrieveData = await Fa.findOne({ email: email });
+  console.log(FaRetrieveData)
   const HodRetrieveData = await Hod.create({
     name: FaRetrieveData.name,
     email: FaRetrieveData.email,
     register: FaRetrieveData.register,
     form: FaRetrieveData.form,
   });
+ 
   const faDelete = await Fa.deleteOne({ email });
   const newData = await Fa.find({});
 
-  if ((HodRetrieveData, newData)) {
+  if (HodRetrieveData && newData) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "bhattacharjeedeboneil@gmail.com",
-        pass: "hpyf xhha klgs djmy",
+        user: primary_mail,
+        pass: primary_mail_pass,
       },
     });
     const mailOptions = {
-      from: "bhattacharjeedeboneil@gmail.com",
+      from: primary_mail,
       to: `${email}`,
       subject: "Application Accepted - Notification",
       html: `
@@ -460,11 +506,18 @@ app.post("/fa/approve", async (req, res) => {
         console.log("notification send " + result.response);
       }
     });
-    res.status(200).json({ message: "success! mail sent" });
-  } else {
-    res.status(404).json({ message: "error detected" });
-  }
+  
+
+  } 
+  res.status(200).json({newData});
 });
+
+
+
+
+
+
+
 
 app.post("/hod/login", async (req, res) => {
   const { email, password } = req.body;
@@ -472,8 +525,8 @@ app.post("/hod/login", async (req, res) => {
     res.status(404).json({ message: "error detected" });
   } else {
     if (
-      email == "bhattacharjeedeboneil@gmail.com" &&
-      password == ""
+      email == primary_mail &&
+      password == process.env.MAIL_USER_PASS
     ) {
       const data = await Hod.find({});
       if (data) {
@@ -500,13 +553,13 @@ app.post("/hod/reject", async (req, res) => {
       var transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "bhattacharjeedeboneil@gmail.com",
-          pass: "hpyf xhha klgs djmy",
+          user: primary_mail,
+          pass: primary_mail_pass,
         },
       });
 
       const mailOptions = {
-        from: "bhattacharjeedeboneil@gmail",
+        from: primary_mail,
         to: `${email}`,
         subject: "Application Rejected",
         html: `
@@ -666,24 +719,24 @@ app.post("/hod/approve", async (req, res) => {
     res.status(404).json({ message: "Invalid" });
   }
 
-  const Student = await User.findOne({ email: email });
+  const Student = await Hod.findOne({ email: email });
   const timestamp = new Date().getTime();
   const qrData = JSON.stringify(Student.form);
   generateQr(qrData, Student, timestamp)
-  .then((dataUri) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "bhattacharjeedeboneil@gmail.com",
-        pass: "hpyf xhha klgs djmy",
-      },
-    });
+    .then((dataUri) => {
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: primary_mail,
+          pass: primary_mail_pass,
+        },
+      });
 
-    var mailOptions = {
-      from: "bhattacharjeedeboneil@gmail.com",
-      to: `${email}`,
-      subject: "Application Confirmed",
-      html: `
+      var mailOptions = {
+        from: primary_mail,
+        to: `${email}`,
+        subject: "Application Confirmed",
+        html: `
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
@@ -751,23 +804,23 @@ app.post("/hod/approve", async (req, res) => {
                     </html>
 
                 `,
-      attachments: [
-        {
-          filename: `${Student.name}.png`,
-          path: `../Frontend/Public/${Student.name}_${timestamp}.png`,
-          cid: "qrCodeImage123", // Provide a unique CID
-        },
-      ],
-    };
+        attachments: [
+          {
+            filename: `${Student.name}.png`,
+            path: `../Frontend/Public/${Student.name}_${timestamp}.png`,
+            cid: "qrCodeImage123", // Provide a unique CID
+          },
+        ],
+      };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
     });
-  });
   const userDelete = await User.deleteOne({ email });
   const hodDelete = await Hod.deleteOne({ email });
 

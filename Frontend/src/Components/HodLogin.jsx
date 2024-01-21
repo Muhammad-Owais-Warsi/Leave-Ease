@@ -46,7 +46,7 @@ export default function HodLogin() {
 
     const AppForm = async () => {
         try {
-            const responseData = await axios.post("http://localhost:4000/hod/login", {
+            const responseData = await axios.post("http://localhost:3000/hod/login", {
 
                 email: email,
                 password: password,

@@ -44,7 +44,7 @@ export default function FaLogin() {
 
     const AppForm = async () => {
         try {
-            const responseData = await axios.post("http://localhost:4000/fa/login", {
+            const responseData = await axios.post("http://localhost:3000/fa/login", {
 
                 email: email,
                 password: password,
