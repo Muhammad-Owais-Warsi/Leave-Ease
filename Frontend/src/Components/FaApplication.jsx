@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import "../Styles/Root.css"
 import "../Styles/FaApplication.css"
@@ -28,7 +28,25 @@ const FaApp = () => {
 
 
     // State to track the forms to be displayed
-    const [forms, setForms] = useState(responseData.data.data || []);
+    const [forms, setForms] = useState([]);
+    useEffect(() => {
+        // On component mount, try to get data from the URL
+        const responseData = dataParam ? JSON.parse(dataParam) : null;
+        if (responseData && responseData.data && responseData.data.data) {
+            setForms(responseData.data.data);
+        }
+
+        const handlePopstate = () => {
+            window.location.reload();
+        };
+
+        window.addEventListener('popstate', handlePopstate);
+
+        // Cleanup the event listener when the component is unmounted
+        return () => {
+            window.removeEventListener('popstate', handlePopstate);
+        };
+    }, [dataParam]);
 
     const handleViewClick = (person) => {
 
@@ -64,6 +82,10 @@ const FaApp = () => {
                 <div class="parent-head">Parent Phone</div>
                 <div class="parent-info">${person.form.parentPhone}</div>
             </div>
+            <div class="reason">
+                <div class="reason-head">Reason:</div>
+                <div class="reason-info">${person.form.reason}</div>
+            </div>
             <button class="btn" onClick="window.close()">Close</button>
         </div>
     `;
@@ -83,17 +105,17 @@ const FaApp = () => {
                 margin: 20px auto;
             }
     
-            .name, .register, .email, .date, .contact {
+            .name, .register, .email, .date, .contact, .reason {
                 margin-bottom: 15px;
             }
     
-            .name-head, .register-head, .email-head, .dateOut-head, .dateIn-head, .personal-head, .parent-head {
+            .name-head, .register-head, .email-head, .dateOut-head, .dateIn-head, .personal-head, .parent-head, .reason-head {
                 font-weight: bold;
                 margin-bottom: 5px;
                 color: #333;
             }
     
-            .name-info, .register-info, .email-info, .dateOut-info, .dateIn-info, .personal-info, .parent-info {
+            .name-info, .register-info, .email-info, .dateOut-info, .dateIn-info, .personal-info, .parent-info, .reason-info {
                 color: #555;
             }
     
@@ -126,72 +148,111 @@ const FaApp = () => {
     `;
 
     };
-
-
-
     const handleRemoveClick = async (index) => {
         const email = forms[index].email;
-    
         const loadingNotification = toast.loading("Submitting...");
-    
         try {
-            const newData = await rejectForm(email);
-    
-            // Update the state with the new data
-            setForms(newData.data.data);
-    
+            const response = await rejectForm(email);
+
+            if (response && response.status === 200 && response.data && response.data.newData) {
+                setForms(response.data.newData);
+                toast.success("Form successfully rejected!", { icon: '✅' });
+                // Save the updated data to the URL
+                const updatedUrl = `/FaApplication?data=${encodeURIComponent(JSON.stringify({ data: { data: response.data.newData } }))}`;
+                navigate(updatedUrl);
+            } else {
+                console.error("Invalid response format:", response);
+                toast.error("Submission failed. Please try again.");
+            }
+
             toast.dismiss(loadingNotification);
-            toast.success("Form successfully rejected!", { icon: '✅' });
-    
-            // Navigate to the FaApplication page with the new data
-            navigate(`/FaApplication?data=${encodeURIComponent(JSON.stringify(newData))}`);
         } catch (error) {
             console.error("Error rejecting form:", error);
             toast.dismiss(loadingNotification);
             toast.error("Submission failed. Please try again.");
         }
     };
-    
+
+
+    const handleApprove = async (index) => {
+        const email = forms[index].email;
+        const loadingNotification = toast.loading("Submitting...");
+        try {
+            const response = await approveForm(email);
+
+            if (response && response.status === 200 && response.data && response.data.newData) {
+                setForms(response.data.newData);
+                toast.success("Form successfully rejected!", { icon: '✅' });
+                // Save the updated data to the URL
+                const updatedUrl = `/FaApplication?data=${encodeURIComponent(JSON.stringify({ data: { data: response.data.newData } }))}`;
+                navigate(updatedUrl);
+            } else {
+                console.error("Invalid response format:", response);
+                toast.error("Submission failed. Please try again.");
+            }
+
+            toast.dismiss(loadingNotification);
+        } catch (error) {
+            console.error("Error rejecting form:", error);
+            toast.dismiss(loadingNotification);
+            toast.error("Submission failed. Please try again.");
+        }
+    }
+
 
     const rejectForm = async (email) => {
         try {
-            const newData = await axios.post("http://localhost:4000/fa/reject", {
+            const response = await axios.post("http://localhost:4000/fa/reject", {
                 email: email
             });
-            setForms("");
-            return newData;
-        }catch(err) {
+            console.log(response);
+            return response;
+        } catch (err) {
             console.error("Error:", err);
             throw err;
         }
-        
-        
+    };
+
+    const approveForm = async (email) => {
+        try {
+            const response = await axios.post("http://localhost:4000/fa/approve", {
+                email: email
+            });
+            console.log(response);
+            return response;
+        } catch (err) {
+            console.error("Error:", err);
+            throw err;
+        }
+
     }
 
     return (
-        <div className='applications'>
-            {forms.map((person, index) => (
-                <div key={index} className='application'>
-                    <h1>{person.name}</h1>
-                    <p>Register Number: {person.register}</p>
-                    <p>Email: {person.email}</p>
-                    <div className='card-btn'>
-                        <div className='card-view-btn'>
-                            <button className='view-btn' onClick={() => handleViewClick(person)} style={{ position: "relative", top: "-53px", left: "-67px" }}>View</button>
+        <>
+            <div className='applications'>
+                {forms.map((person, index) => (
+                    <div key={index} className='application'>
+                        <h1>{person.name}</h1>
+                        <p>Register Number: {person.register}</p>
+                        <p>Email: {person.email}</p>
+                        <div className='card-btn'>
+                            <div className='card-view-btn'>
+                                <button className='view-btn' onClick={() => handleViewClick(person)} style={{ position: "relative", top: "-53px", left: "-67px" }}>View</button>
 
+                            </div>
+                            <div className='card-action-btn'>
+                                <button className='approve-btn' onClick={() => handleApprove(index)} style={{ position: "relative", left: "-62px", width: "71%" }}>Approve</button>
+                                <button className='del-btn' onClick={() => handleRemoveClick(index)} style={{ position: "relative", left: "9px", width: "100px" }}>Reject</button>
+                            </div>
                         </div>
-                        <div className='card-action-btn'>
-                            <button className='approve-btn' style={{ position: "relative", left: "-62px", width: "71%" }}>Approve</button>
-                            <button className='del-btn' onClick={() => handleRemoveClick(index)} style={{ position: "relative", left: "9px", width: "100px" }}>Reject</button>
-                        </div>
+
+                        <hr />
                     </div>
+                ))}
 
-                    <hr />
-                </div>
-            ))}
-
-
-        </div>
+            </div>
+            <button onClick={() => navigate("/")}>Back to Home</button>
+        </>
     );
 };
 
