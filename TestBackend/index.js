@@ -213,7 +213,7 @@ app.post("/form", async (req, res) => {
             service: 'gmail',
             auth: {
                 user: 'warsimuhammadowais@gmail.com',
-                pass: 'lpal kbcd xqcg eoeq'
+                pass: ''
             }
         });
 
@@ -310,7 +310,7 @@ app.post("/fa/login", async (req, res) => {
     if (!email || !password) {
         res.status(400).json({ message: "Empty fields" });
     } else {
-        if (email === "warsimuhammadowais@gmail.com" && password === "newjourney786") {
+        if (email === "warsimuhammadowais@gmail.com" && password === "") {
 
             const data = await Fa.find({});
             if (data) {
@@ -343,7 +343,7 @@ app.post("/fa/reject", async (req, res) => {
                 service: 'gmail',
                 auth: {
                     user: 'warsimuhammadowais@gmail.com',
-                    pass: 'lpal kbcd xqcg eoeq'
+                    pass: ''
                 }
             });
 
@@ -461,7 +461,7 @@ app.post("/fa/approve", async (req, res) => {
                 service: 'gmail',
                 auth: {
                     user: 'warsimuhammadowais@gmail.com',
-                    pass: 'lpal kbcd xqcg eoeq'
+                    pass: ''
                 }
             });
 
@@ -558,7 +558,7 @@ app.post("/hod/login", async (req, res) => {
     if (!email || !password) {
         res.status(400).json({ message: "Empty fields" });
     } else {
-        if (email === "warsimuhammadowais@gmail.com" && password === "newjourney786") {
+        if (email === "warsimuhammadowais@gmail.com" && password === "") {
 
             const data = await Hod.find({});
             if (data) {
@@ -590,7 +590,7 @@ app.post("/hod/reject", async (req, res) => {
                 service: 'gmail',
                 auth: {
                     user: 'warsimuhammadowais@gmail.com',
-                    pass: 'lpal kbcd xqcg eoeq'
+                    pass: ''
                 }
             });
 
@@ -766,7 +766,7 @@ app.post("/hod/approve", async (req, res) => {
                     service: 'gmail',
                     auth: {
                         user: 'warsimuhammadowais@gmail.com',
-                        pass: 'lpal kbcd xqcg eoeq'
+                        pass: ''
                     }
                 });
 
