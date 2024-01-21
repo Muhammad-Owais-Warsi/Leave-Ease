@@ -14,8 +14,15 @@ export default function Form() {
     const [register, setRegister] = useState("");
     const [dateOut, setDateOut] = useState("");
     const [dateIn, setDateIn] = useState("");
+    const [reason, setReason] = useState("");
     const [personalPhone, setPersonalPhone] = useState();
     const [parentPhone, setParentPhone] = useState();
+
+ 
+
+
+
+ 
 
 
     const Onsubmit = async () => {
@@ -29,17 +36,17 @@ export default function Form() {
 
                 setTimeout(() => {
                     toast.dismiss(loadingNotification);
-                },1000);
+                }, 1000);
 
                 setTimeout(() => {
                     toast.success("Form submitted successfully!", {
                         icon: '✅',
                     });
-                },2000)
+                }, 2000)
 
                 setTimeout(() => {
                     navigate("/");
-                },3000)
+                }, 3000)
             } catch (error) {
                 toast.dismiss(loadingNotification);
                 toast.error("Submission failed. Please try again.");
@@ -49,7 +56,7 @@ export default function Form() {
 
     const AppForm = async () => {
         try {
-            await axios.post("http://localhost:3000/form", {
+            await axios.post("http://localhost:4000/form", {
                 name: name,
                 email: email,
                 register: register,
@@ -61,6 +68,7 @@ export default function Form() {
                     dateOut: dateOut,
                     personalPhone: personalPhone,
                     parentPhone: parentPhone,
+                    reason:reason
                 },
             });
         } catch (error) {
@@ -109,6 +117,18 @@ export default function Form() {
                         <div className="parent-contact-head fh">Parent Phone <span>*</span></div>
                     </div>
                 </div>
+                <div className="reason-container" style={{position:"relative",top:"11px"}}>
+                    <textarea
+                
+                        onChange={(e) => setReason(e.target.value)}
+                        required
+                        
+                    />
+
+                    <div className="reason-head" style={{position:"relative",left:"-22px"}}>Reason <span style={{color:"red"}}>*</span></div>
+                </div>
+
+
                 <div className="submit-btn">
                     <button className="submit" onClick={Onsubmit}>Submit</button>
                 </div>

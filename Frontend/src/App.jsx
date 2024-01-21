@@ -6,6 +6,7 @@ import FaLogin from "./Components/FaLogin.jsx";
 import HodLogin from "./Components/HodLogin.jsx"
 import Form from "./Components/Form.jsx";
 import FaApp from "./Components/FaApplication.jsx"
+import HodApp from "./Components/HodApplication.jsx"
 
 function App() {
   useEffect(() => {
@@ -35,6 +36,7 @@ function App() {
           <Route path="/HOD" element={<HodLogin></HodLogin>}></Route>
           <Route path="/Form" element={<Form></Form>}></Route>
           <Route path="/FaApplication" element={<FaApp></FaApp>}></Route>
+          <Route path="/HodApplication" element={<HodApp></HodApp>}></Route>
         </Routes>
       </BrowserRouter>
     </>

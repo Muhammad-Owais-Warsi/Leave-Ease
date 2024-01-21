@@ -10,9 +10,19 @@
     margin-bottom: 10px; /* Optional: Add some spacing between inputs */
 }
 
+/* Style for both input and textarea */
+.form-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 2px solid #000;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
 .form-head {
     position: relative;
-    top:32px;
+    top: 32px;
 }
 
 .form-main {
@@ -21,23 +31,24 @@
     align-items: center;
     flex-direction: column;
     position: relative;
-    left:-115px;
-    top:61px;
+    left: -115px;
+    top: 61px;
 }
 
 .fh {
     position: relative;
-    left:11px;
+    left: 11px;
 }
 
 .form-head {
-    font-size:40px;
+    font-size: 40px;
 }
 
 span {
-    color:red;
+    color: red;
 }
 
+/* Style for submit button */
 .submit-btn button {
     font-size: 25px;
     color: #000;
@@ -59,9 +70,8 @@ span {
 
 .date-container {
     display: flex;
-    justify-content: center ;
+    justify-content: center;
     align-items: center;
-
 }
 
 .contact-container {
@@ -77,9 +87,26 @@ span {
     width: 24%;
 }
 
-
+/* Remove spinner arrows in number input */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* Style for textarea */
+textarea {
+    width: 209%;
+    padding: 10px;
+    /* margin: 7px 0; */
+    /* border: 2px solid #000; */
+    /* border-radius: 5px; */
+    font-size: 16px;
+    position: relative;
+    right: 22px;
+}
+textarea:focus,
+textarea:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px 2px  #3498db; /* Add your desired box shadow */
 }
