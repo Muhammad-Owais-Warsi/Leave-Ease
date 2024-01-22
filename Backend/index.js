@@ -155,9 +155,9 @@ app.delete("/del", async (req, res) => {
 
 })
 
-app.get("/getfa", async (req,res) => {
+app.get("/getfa", async (req, res) => {
   const data = await Fa.find({})
-  res.json({msg:data})
+  res.json({ msg: data })
 })
 app.get("/formdata", async (req, res) => {
   const data = await Fa.find({});
@@ -194,7 +194,7 @@ app.post("/user/login", async (req, res) => {
       register: register,
     });
   }
-  res.status(200).json({message:"success"})
+  res.status(200).json({ message: "success" })
 });
 
 app.post("/form", async (req, res) => {
@@ -293,7 +293,7 @@ app.post("/fa/login", async (req, res) => {
         res.status(401).json({ message: "error" });
       }
     }
-    res.status(400).json({message:"error"})
+    res.status(400).json({ message: "error" })
   }
 });
 
@@ -404,10 +404,15 @@ app.post("/fa/reject", async (req, res) => {
   }
 });
 
+
+
+
+
+
 app.post("/fa/approve", async (req, res) => {
   const { email } = req.body;
 
-  const FaRetrieveData = await Fa.findOne({ email: email });
+  const FaRetrieveData = await Fa.findOne({ email });
   console.log(FaRetrieveData)
   const HodRetrieveData = await Hod.create({
     name: FaRetrieveData.name,
@@ -415,23 +420,23 @@ app.post("/fa/approve", async (req, res) => {
     register: FaRetrieveData.register,
     form: FaRetrieveData.form,
   });
- 
+
   const faDelete = await Fa.deleteOne({ email });
   const newData = await Fa.find({});
 
-  if (HodRetrieveData && newData) {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: primary_mail,
-        pass: primary_mail_pass,
-      },
-    });
-    const mailOptions = {
-      from: primary_mail,
-      to: `${email}`,
-      subject: "Application Accepted - Notification",
-      html: `
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: primary_mail,
+      pass: primary_mail_pass,
+    },
+  });
+  const mailOptions = {
+    from: primary_mail,
+    to: `${email}`,
+    subject: "Application Accepted - Notification",
+    html: `
                 <!DOCTYPE html>
                 <html lang="en">
                 <head>
@@ -497,19 +502,23 @@ app.post("/fa/approve", async (req, res) => {
                 </html>
                 
                 `,
-    };
+  };
 
-    transporter.sendMail(mailOptions, (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("notification send " + result.response);
-      }
-    });
-  
+  await transporter.sendMail(mailOptions, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: "Error sending email notification" });
+    } else {
+      console.log("done");
+      res.status(200).json({ newData });
+    }
+  });
 
-  } 
-  res.status(200).json({newData});
+
+
+
+
+
 });
 
 
