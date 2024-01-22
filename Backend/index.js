@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import fs from "fs";
 import nodemailer from "nodemailer";
-import QRcode from "qrcode"
+import QRcode from "qrcode";
 
 const primary_mail = process.env.MAIL_USER;
 const primary_mail_pass = process.env.MAIL_PASSWORD;
@@ -152,13 +152,12 @@ app.delete("/del", async (req, res) => {
   await Fa.deleteMany({});
   await Hod.deleteMany({});
   res.json({ msg: "done" });
-
-})
+});
 
 app.get("/getfa", async (req, res) => {
-  const data = await Fa.find({})
-  res.json({ msg: data })
-})
+  const data = await Fa.find({});
+  res.json({ msg: data });
+});
 app.get("/formdata", async (req, res) => {
   const data = await Fa.find({});
   res.json(data);
@@ -172,7 +171,8 @@ app.delete("/delete", async (req, res) => {
 });
 
 app.post("/user/login", async (req, res) => {
-  const { email, register } = req.body;
+  try{
+    const { email, register } = req.body;
 
   const duplicateUser = await User.findOne({ email, register });
   const duplicateFaUser = await User.findOne({ email, register });
@@ -194,7 +194,12 @@ app.post("/user/login", async (req, res) => {
       register: register,
     });
   }
-  res.status(200).json({ message: "success" })
+  res.status(200).json({ message: "success" });
+  }
+  catch(error){
+    console.log(error);
+    res.status(400).json({ message: "error found"});
+  }
 });
 
 app.post("/form", async (req, res) => {
@@ -282,18 +287,16 @@ app.post("/fa/login", async (req, res) => {
   if (!email || !password) {
     res.status(401).json({ message: "Repeated values found." });
   } else {
-    if (
-      email === primary_mail &&
-      password === process.env.MAIL_USER_PASS
-    ) {
+    if (email === primary_mail && password === process.env.MAIL_USER_PASS) {
       const data = await Fa.find({});
       if (data) {
         res.status(200).json({ message: " success", data });
       } else {
         res.status(401).json({ message: "error" });
       }
+    }else{
+    res.status(400).json({ message: "error" });
     }
-    res.status(400).json({ message: "error" })
   }
 });
 
@@ -404,139 +407,129 @@ app.post("/fa/reject", async (req, res) => {
   }
 });
 
+function sendFAapprovalmail(email, userName){
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "bhattacharjeedeboneil@gmail.com",
+        pass: 'hpyf xhha klgs djmy',
+      },
+    });
 
+    var mailOptions = {
+      from: "bhattacharjeedeboneil@gmail.com",
+      to: email,
+      subject: "Application Submitted",
+      html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+              body {
+                  font-family: 'Arial', sans-serif;
+                  background-color: #f5f5f5;
+                  margin: 0;
+                  padding: 0;
+              }
+      
+              .container {
+                  max-width: 600px;
+                  margin: 20px auto;
+                  padding: 20px;
+                  background-color: #ffffff;
+                  border: 1px solid #ccc;
+                  border-radius: 5px;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+              }
+      
+              h2 {
+                  color: #333;
+                  margin-bottom: 20px;
+              }
+      
+              p {
+                  color: #555;
+                  line-height: 1.6;
+              }
+      
+              a {
+                  color: #007bff;
+                  text-decoration: none;
+              }
+      
+              a:hover {
+                  text-decoration: underline;
+              }
+      
+              .footer {
+                  margin-top: 20px;
+                  text-align: center;
+                  color: #777;
+                  font-size: 14px;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <h2>Your Application has been approved by Faculty Advisor</h2>
+              <p>Dear ${userName},</p>
+              <p>We are pleased to inform you that your leave application has been approved by the Faculty Advisor and has been forwarded to the Head of Department (HOD) for further processing.</p>
+              <p>If you have any questions or need additional information, please feel free to <a href="mailto:support@example.com">contact our support team</a>.</p>
+              <p>Best regards,<br> Team LeaveEase</p>
+          </div>
+          <div class="footer">
+              <p>This is an automated message. Please do not reply to this email.</p>
+          </div>
+      </body>
+      </html>
+      
+      `,
+    };
 
-
-
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+  }
 
 app.post("/fa/approve", async (req, res) => {
   const { email } = req.body;
+  if (!email) {
+    res.status(404).json({ message: "Error" });
+  }
 
-  const FaRetrieveData = await Fa.findOne({ email });
-  console.log(FaRetrieveData)
-  const HodRetrieveData = await Hod.create({
-    name: FaRetrieveData.name,
-    email: FaRetrieveData.email,
-    register: FaRetrieveData.register,
-    form: FaRetrieveData.form,
+  const approvedUser = await Fa.findOne({ email: email });
+  const faDelete = await Fa.deleteOne({ email: email });
+
+  const newUser = await Hod.create({
+    name: approvedUser.name,
+    email: approvedUser.email,
+    register: approvedUser.register,
+    form: approvedUser.form,
   });
 
-  const faDelete = await Fa.deleteOne({ email });
   const newData = await Fa.find({});
-
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: primary_mail,
-      pass: primary_mail_pass,
-    },
-  });
-  const mailOptions = {
-    from: primary_mail,
-    to: `${email}`,
-    subject: "Application Accepted - Notification",
-    html: `
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                        body {
-                            font-family: 'Arial', sans-serif;
-                            background-color: #f5f5f5;
-                            margin: 0;
-                            padding: 0;
-                        }
-                
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            padding: 20px;
-                            background-color: #ffffff;
-                            border: 1px solid #ccc;
-                            border-radius: 5px;
-                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        }
-                
-                        h2 {
-                            color: #333;
-                            margin-bottom: 20px;
-                        }
-                
-                        p {
-                            color: #555;
-                            line-height: 1.6;
-                        }
-                
-                        a {
-                            color: #007bff;
-                            text-decoration: none;
-                        }
-                
-                        a:hover {
-                            text-decoration: underline;
-                        }
-                
-                        .footer {
-                            margin-top: 20px;
-                            text-align: center;
-                            color: #777;
-                            font-size: 14px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <h2>Your Application has been approved by Faculty Advisor</h2>
-                        <p>Dear ${FaRetrieveData.name},</p>
-                        <p>We are pleased to inform you that your leave application has been approved by the Faculty Advisor and has been forwarded to the Head of Department (HOD) for further processing.</p>
-                        <p>If you have any questions or need additional information, please feel free to <a href="mailto:support@example.com">contact our support team</a>.</p>
-                        <p>Best regards,<br> Team LeaveEase</p>
-                    </div>
-                    <div class="footer">
-                        <p>This is an automated message. Please do not reply to this email.</p>
-                    </div>
-                </body>
-                </html>
-                
-                `,
-  };
-
-  await transporter.sendMail(mailOptions, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).json({ error: "Error sending email notification" });
-    } else {
-      console.log("done");
-      res.status(200).json({ newData });
-    }
-  });
-
-
-
-
-
-
+  if (!approvedUser || !faDelete || !newUser) {
+    res.status(404).json({ message: "User not found" });
+  }
+  else{
+    sendFAapprovalmail(approvedUser.email, approvedUser.name);
+    res.status(200).json({ newData });
+    console.log("sent NewData and mail successfully!.");
+  }
 });
-
-
-
-
-
-
-
 
 app.post("/hod/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(404).json({ message: "error detected" });
   } else {
-    if (
-      email == primary_mail &&
-      password == process.env.MAIL_USER_PASS
-    ) {
+    if (email == primary_mail && password == process.env.MAIL_USER_PASS) {
       const data = await Hod.find({});
       if (data) {
         res.status(200).json({ message: "success", data });
@@ -552,7 +545,7 @@ app.post("/hod/reject", async (req, res) => {
   if (!email) {
     res.status(404).json({ message: "error" });
   } else {
-    const user = Hod.findOne({ email: email });
+    const user = await Hod.findOne({ email:email });
     const hodDelete = await Hod.deleteOne({ email: email });
     const userDelete = await User.deleteOne({ email: email });
 
@@ -648,9 +641,8 @@ app.post("/hod/reject", async (req, res) => {
       });
 
       res.status(200).json({ newData });
-    } else {
-      res.status(401).json({ message: "Invalid" });
-    }
+    } 
+    
   }
 });
 
@@ -731,21 +723,20 @@ app.post("/hod/approve", async (req, res) => {
   const Student = await Hod.findOne({ email: email });
   const timestamp = new Date().getTime();
   const qrData = JSON.stringify(Student.form);
-  generateQr(qrData, Student, timestamp)
-    .then((dataUri) => {
-      var transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: primary_mail,
-          pass: primary_mail_pass,
-        },
-      });
+  generateQr(qrData, Student, timestamp).then((dataUri) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: primary_mail,
+        pass: primary_mail_pass,
+      },
+    });
 
-      var mailOptions = {
-        from: primary_mail,
-        to: `${email}`,
-        subject: "Application Confirmed",
-        html: `
+    var mailOptions = {
+      from: primary_mail,
+      to: `${email}`,
+      subject: "Application Confirmed",
+      html: `
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
@@ -813,23 +804,23 @@ app.post("/hod/approve", async (req, res) => {
                     </html>
 
                 `,
-        attachments: [
-          {
-            filename: `${Student.name}.png`,
-            path: `../Frontend/Public/${Student.name}_${timestamp}.png`,
-            cid: "qrCodeImage123", // Provide a unique CID
-          },
-        ],
-      };
+      attachments: [
+        {
+          filename: `${Student.name}.png`,
+          path: `../Frontend/Public/${Student.name}_${timestamp}.png`,
+          cid: "qrCodeImage123", // Provide a unique CID
+        },
+      ],
+    };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
     });
+  });
   const userDelete = await User.deleteOne({ email });
   const hodDelete = await Hod.deleteOne({ email });
 
