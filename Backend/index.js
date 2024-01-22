@@ -171,7 +171,8 @@ app.delete("/delete", async (req, res) => {
 });
 
 app.post("/user/login", async (req, res) => {
-  const { email, register } = req.body;
+  try{
+    const { email, register } = req.body;
 
   const duplicateUser = await User.findOne({ email, register });
   const duplicateFaUser = await User.findOne({ email, register });
@@ -194,6 +195,11 @@ app.post("/user/login", async (req, res) => {
     });
   }
   res.status(200).json({ message: "success" });
+  }
+  catch(error){
+    console.log(error);
+    res.status(400).json({ message: "error found"});
+  }
 });
 
 app.post("/form", async (req, res) => {
@@ -288,8 +294,9 @@ app.post("/fa/login", async (req, res) => {
       } else {
         res.status(401).json({ message: "error" });
       }
-    }
+    }else{
     res.status(400).json({ message: "error" });
+    }
   }
 });
 
@@ -405,13 +412,13 @@ function sendFAapprovalmail(email, userName){
       service: "gmail",
       auth: {
         user: "bhattacharjeedeboneil@gmail.com",
-        pass: "",
+        pass: 'hpyf xhha klgs djmy',
       },
     });
 
     var mailOptions = {
       from: "bhattacharjeedeboneil@gmail.com",
-      to: `${email}`,
+      to: email,
       subject: "Application Submitted",
       html: `
       <!DOCTYPE html>
