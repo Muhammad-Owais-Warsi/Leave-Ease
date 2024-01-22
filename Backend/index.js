@@ -551,6 +551,7 @@ app.post("/hod/reject", async (req, res) => {
 
     const newData = await Hod.find({});
 
+    
     if (hodDelete && userDelete) {
       var transporter = nodemailer.createTransport({
         service: "gmail",
