@@ -1,5 +1,6 @@
 # LeaveEase
 
+
 Welcome to LeaveEase – Your College Leave Application Web Portal
 
 ## Overview
