@@ -251,7 +251,7 @@ const FaApp = () => {
                 ))}
 
             </div>
-            <button onClick={() => navigate("/")}>Back to Home</button>
+            <button onClick={() => navigate("/")} style={{width: "23%",position: "relative",left: "38%"}}>Back to Home</button>
         </>
     );
 };
