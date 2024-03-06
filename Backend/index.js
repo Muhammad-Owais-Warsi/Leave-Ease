@@ -163,12 +163,7 @@ app.get("/formdata", async (req, res) => {
   res.json(data);
 });
 
-app.delete("/delete", async (req, res) => {
-  await User.deleteMany({});
-  await Fa.deleteMany({});
-  await Hod.deleteMany({});
-  res.json({ message: "Deleted" });
-});
+
 
 app.post("/user/login", async (req, res) => {
   try{
@@ -687,7 +682,7 @@ const generateQr = async (qrData, Student, timestamp) => {
                   </div>
                   <div>
                       <label>Reason:</label>
-                      <div>A${Student.form.reason}</div>
+                      <div>${Student.form.reason}</div>
                   </div>
               
               </div>

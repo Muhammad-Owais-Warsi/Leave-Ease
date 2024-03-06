@@ -9,7 +9,7 @@ export default function Navbar() {
     return (
         
         <div className="navbar">
-            
+
             <div className="nav-items">
                 <ul>
                     <li>
