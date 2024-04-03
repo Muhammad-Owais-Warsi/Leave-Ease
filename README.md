@@ -19,26 +19,26 @@ LeaveEase is a user-friendly web portal designed to streamline the leave applica
 
 To get started with LeaveEase, follow these steps:
 
-## Star & Fork the Repository
+1. Star & Fork the Repository
 
-1. Clone the repository:
+2. Clone the repository:
 
    ```bash
    git clone https://github.com/YourUsername/LeaveEase.git
 
-2. Go into the Directory
+3. Go into the Directory
 
    ```bash
    cd LeaveEase
 
-3. For Frontend
+4. For Frontend
    
      ```bash
      cd Frontend
      npm i
      npm run dev
 
-4. For Backend
+5. For Backend
      
      ```bash
      cd Backend
