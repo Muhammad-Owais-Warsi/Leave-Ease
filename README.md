@@ -19,6 +19,8 @@ LeaveEase is a user-friendly web portal designed to streamline the leave applica
 
 To get started with LeaveEase, follow these steps:
 
+## Star & Fork the Repository
+
 1. Clone the repository:
 
    ```bash
